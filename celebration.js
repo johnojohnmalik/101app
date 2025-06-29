@@ -1,230 +1,184 @@
-// Cybersecurity-themed titles for celebrations
-const cyberTitles = [
-    "Firewall Whisperer",
-    "Patch Master",
-    "Digital Ninja",
-    "The Exploit Exorcist",
-    "Byte Guardian",
-    "Root Access Royalty",
-    "Crypto Commander",
-    "Phish Slayer",
-    "Zero-Day Hero",
-    "The Encryptor",
-    "Net Sentinel",
-    "Red Team Rockstar",
-    "The Bug Hunter",
-    "Token Titan",
-    "Cyber Sage",
-    "Packet Paladin",
-    "Malware Mercenary",
-    "The Boolean Boss",
-    "Code Shield",
-    "The Kernel Keeper"
+// Cyber-themed titles for streak celebrations
+const CELEBRATION_TITLES = [
+  "Firewall Whisperer",
+  "Patch Master",
+  "Digital Ninja",
+  "The Exploit Exorcist",
+  "Byte Guardian",
+  "Root Access Royalty",
+  "Crypto Commander",
+  "Phish Slayer",
+  "Zero-Day Hero",
+  "The Encryptor",
+  "Net Sentinel",
+  "Red Team Rockstar",
+  "The Bug Hunter",
+  "Token Titan",
+  "Cyber Sage",
+  "Packet Paladin",
+  "Malware Mercenary",
+  "The Boolean Boss",
+  "Code Shield",
+  "The Kernel Keeper"
 ];
 
-// Celebration class for managing celebrations
-class Celebration {
-    constructor() {
-        this.container = document.getElementById('celebrationContainer');
-        this.isActive = false;
-    }
+function triggerStreakCelebration(streakCount) {
+  // Create overlay if it doesn't exist
+  let overlay = document.getElementById('celebration-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'celebration-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+    document.body.appendChild(overlay);
+  }
 
-    // Trigger celebration with streak count
-    trigger(streak) {
-        if (this.isActive) return; // Prevent multiple celebrations
-        
-        this.isActive = true;
-        const title = this.getRandomTitle();
-        
-        // Create celebration message
-        this.showMessage(streak, title);
-        
-        // Create fireworks
-        this.createFireworks();
-        
-        // Auto-hide after 4 seconds
-        setTimeout(() => {
-            this.hide();
-        }, 4000);
-    }
+  // Clear previous content
+  overlay.innerHTML = '';
 
-    // Get random cybersecurity title
-    getRandomTitle() {
-        return cyberTitles[Math.floor(Math.random() * cyberTitles.length)];
-    }
+  // Create fireworks canvas
+  const canvas = document.createElement('canvas');
+  canvas.className = 'fireworks';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  `;
 
-    // Show celebration message
-    showMessage(streak, title) {
-        const message = document.createElement('div');
-        message.className = 'celebration-message';
-        message.innerHTML = `
-            <h2>Streak ${streak}!</h2>
-            <p>${title}</p>
-        `;
-        
-        this.container.appendChild(message);
-        this.container.style.display = 'block';
-        
-        // Trigger animation
-        setTimeout(() => {
-            message.style.animation = 'fadeInOut 4s ease-in-out';
-        }, 100);
-    }
+  // Create message container
+  const messageContainer = document.createElement('div');
+  messageContainer.style.cssText = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #0ff;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 1001;
+  `;
 
-    // Create fireworks effect
-    createFireworks() {
-        const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff8800', '#8800ff'];
-        
-        // Create multiple firework bursts
-        for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-                this.createFireworkBurst(colors);
-            }, i * 200);
-        }
-    }
+  // Create streak message
+  const streakMessage = document.createElement('div');
+  streakMessage.style.cssText = `
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #0ff;
+  `;
+  streakMessage.textContent = `Streak ${streakCount}!`;
 
-    // Create a single firework burst
-    createFireworkBurst(colors) {
-        const burstCount = 20;
-        const centerX = Math.random() * window.innerWidth;
-        const centerY = Math.random() * window.innerHeight;
-        
-        for (let i = 0; i < burstCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'cyber-particle';
-            
-            // Random color
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.background = color;
-            particle.style.boxShadow = `0 0 10px ${color}`;
-            
-            // Position at center
-            particle.style.left = centerX + 'px';
-            particle.style.top = centerY + 'px';
-            
-            // Random direction and distance
-            const angle = (i / burstCount) * 2 * Math.PI;
-            const distance = 100 + Math.random() * 100;
-            const tx = Math.cos(angle) * distance;
-            const ty = Math.sin(angle) * distance;
-            
-            // Set CSS custom properties for animation
-            particle.style.setProperty('--tx', tx + 'px');
-            particle.style.setProperty('--ty', ty + 'px');
-            
-            // Add to container
-            this.container.appendChild(particle);
-            
-            // Animate particle
-            particle.style.animation = 'particleAnimation 2s ease-out forwards';
-            
-            // Remove particle after animation
-            setTimeout(() => {
-                if (particle.parentNode) {
-                    particle.parentNode.removeChild(particle);
-                }
-            }, 2000);
-        }
-    }
+  // Create title message
+  const titleMessage = document.createElement('div');
+  titleMessage.style.cssText = `
+    font-size: 1.5em;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+  `;
+  titleMessage.textContent = CELEBRATION_TITLES[Math.floor(Math.random() * CELEBRATION_TITLES.length)];
 
-    // Hide celebration
-    hide() {
-        this.container.style.display = 'none';
-        this.container.innerHTML = '';
-        this.isActive = false;
-    }
+  // Add messages to container
+  messageContainer.appendChild(streakMessage);
+  messageContainer.appendChild(titleMessage);
+
+  // Add elements to overlay
+  overlay.appendChild(canvas);
+  overlay.appendChild(messageContainer);
+
+  // Show overlay
+  requestAnimationFrame(() => {
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => {
+      overlay.style.opacity = '1';
+      launchFireworks(canvas);
+    });
+  });
+
+  // Hide after animation
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      overlay.innerHTML = '';
+    }, 500);
+  }, 2400);
 }
 
-// Global celebration instance
-let celebration = new Celebration();
+function launchFireworks(canvas) {
+  const ctx = canvas.getContext('2d');
+  const colors = ['#0ff', '#ff00ff', '#fff', '#00ff66', '#ff3366', '#00ccff'];
+  let particles = [];
+  let animationFrame;
 
-// Function to trigger celebration (called from quiz)
-function triggerCelebration(streak) {
-    celebration.trigger(streak);
+  function createFirework() {
+    const x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+    const y = Math.random() * canvas.height * 0.3 + canvas.height * 0.2;
+    const count = 18 + Math.floor(Math.random() * 8);
+
+    for (let i = 0; i < count; i++) {
+      const angle = (2 * Math.PI * i) / count;
+      const speed = 2 + Math.random() * 2;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        alpha: 1,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+  }
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      ctx.globalAlpha = p.alpha;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.018;
+    });
+
+    particles = particles.filter(p => p.alpha > 0);
+
+    if (frame % 15 === 0 && frame < 45) {
+      createFirework();
+    }
+
+    if (frame < 90) {
+      animationFrame = requestAnimationFrame(animate);
+      frame++;
+    } else {
+      cancelAnimationFrame(animationFrame);
+    }
+  }
+
+  animate();
+
+  return () => {
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame);
+    }
+  };
 }
 
-// Enhanced CSS animations for better fireworks
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeInOut {
-        0% { 
-            opacity: 0; 
-            transform: translate(-50%, -50%) scale(0.8); 
-        }
-        20% { 
-            opacity: 1; 
-            transform: translate(-50%, -50%) scale(1.1); 
-        }
-        80% { 
-            opacity: 1; 
-            transform: translate(-50%, -50%) scale(1); 
-        }
-        100% { 
-            opacity: 0; 
-            transform: translate(-50%, -50%) scale(0.8); 
-        }
-    }
-
-    @keyframes particleAnimation {
-        0% { 
-            transform: translate(0, 0) rotate(0deg); 
-            opacity: 1; 
-            width: 4px;
-            height: 4px;
-        }
-        50% {
-            opacity: 1;
-            width: 6px;
-            height: 6px;
-        }
-        100% { 
-            transform: translate(var(--tx), var(--ty)) rotate(360deg); 
-            opacity: 0; 
-            width: 2px;
-            height: 2px;
-        }
-    }
-
-    .celebration-message {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.9);
-        padding: 30px 60px;
-        border-radius: 15px;
-        border: 3px solid var(--primary-color);
-        text-align: center;
-        opacity: 0;
-        z-index: 1001;
-        box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-    }
-
-    .celebration-message h2 {
-        color: var(--primary-color);
-        font-size: 3em;
-        margin: 0;
-        text-shadow: 0 0 20px var(--primary-color);
-        font-family: 'Orbitron', sans-serif;
-        font-weight: bold;
-    }
-
-    .celebration-message p {
-        color: var(--accent-color);
-        font-size: 1.8em;
-        margin: 15px 0 0;
-        text-shadow: 0 0 15px var(--accent-color);
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: bold;
-    }
-
-    .cyber-particle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 1000;
-    }
-`;
-document.head.appendChild(style); 
+// Export the function for use in other files
+window.triggerStreakCelebration = triggerStreakCelebration; 
